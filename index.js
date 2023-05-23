@@ -1,6 +1,6 @@
 //importamos express
 import express, { response } from "express"
-import {conectarBase,agregarEntrada,agregarSalida,consultarDni,obtenerEstadoR} from "./src/mysql_conector.js"
+import {agregarEntrada,agregarSalida,consultarDni,obtenerEstadoR} from "./src/mysql_conector.js"
 
 //iniciamos servidor
 const app=express()
@@ -23,7 +23,6 @@ app.use(express.static('./public'))
 //renderizar vista
 app.get('/',function(req,res){
     //res.send('aplicación iniciada')
-    conectarBase()
     //todos=obtenerContactos()
     //res.render('index',{titulo :'Aplicacion de contactos',contactos:todos})
     let estadoReg=obtenerEstadoR()
