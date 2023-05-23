@@ -1,0 +1,49 @@
+html
+    head 
+        title= titulo
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet")
+        link(rel="stylesheet" href="style.css")
+        link(href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet")
+    body 
+        div.formg
+            h1 ASISTENCIA
+            div.widget
+                div.fecha
+                    p(id="diaSemana" class="diaSemana")
+                    p &nbsp;
+                    p(id="dia" class="dia")
+                    p &nbsp;de&nbsp;
+                    <p id="mes" class="mes"></p>
+                    p  &nbsp;del&nbsp;
+                    p(id="year" class="year") 
+                div.reloj
+                    p(id="horas" class="horas") 
+                    p  : 
+                    p(id="minutos" class="minutos") 
+                    p  : 
+                    div.caja-segundos
+                        p(id="ampm" class="ampm")
+                        p(id="segundos" class="segundos")      
+            div.form    
+                div.grupo 
+                    input(type="text" id="dni" maxlength=8 required)
+                    label DNI
+                    span.barra
+                    button(id="btn2" class="disabled" disabled) REGISTRAR
+                    button(id="btn_registrar" hidden="true" style="display:none;")
+                    p(id="mensaje")= mensaje
+                div.grupo2 
+                    video(id="video" playsinline autoplay)
+                //- each contacto in contactos 
+                //-     p= `${contacto.id_agenda}/${contacto.nombre_contacto}`
+                //-     spam(class="borrar material-icons" id=contacto.id_agenda) delete
+    //-Canvas de la imagen        
+    canvas(id="canvas" width="300" height="300" hidden="true")
+
+    script(src="funciones.js")
+    script(src="reloj.js")
+    script(src="camara.js")
+    script(src="https://cdn.jsdelivr.net/npm/sweetalert2@11")
+html 
