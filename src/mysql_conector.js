@@ -25,7 +25,7 @@ dia = fec.getDate();
 const conector = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: '$191591Jor',
     database: 'asistencia_unmsm',
 })
 
@@ -47,7 +47,6 @@ conector.connect(function(err) {
 
 
 const agregarEntrada = (dni) => {
-    consulta=1
     console.log("Agregando entrada")
     let estado='001'
     let tipoRegi='ING'
