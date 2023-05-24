@@ -54,7 +54,8 @@
 
 function actualizarP(){
     var pe=document.getElementById('mensaje')
+    var pecon=document.getElementById('consulta')
+    pecon.textContent=""
     pe.textContent=""
-   
 }
 var intervaloP= setInterval(actualizarP,5000);
