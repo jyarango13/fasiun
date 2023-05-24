@@ -229,9 +229,6 @@ const consultarDni = (dni) => {
 const obtenerEstadoR =() =>{
     return eReg
 }
-const obtenerEstadoConsulta =() =>{
-    return consulta
-}
 
 (function(){
     var actualizarHora=function(){
@@ -261,6 +258,6 @@ const obtenerEstadoConsulta =() =>{
 
 
 
-export {agregarEntrada, agregarSalida, consultarDni,obtenerEstadoR, }
+export {agregarEntrada, agregarSalida, consultarDni,obtenerEstadoR }
 
 
