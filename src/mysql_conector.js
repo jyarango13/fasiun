@@ -11,13 +11,14 @@ const horaIngresoTC=10
 const horaSalidaTC=14
 const horaIngresoAdm=8
 const horaSalidaAdm=15
-const minutosVer=30
-const minutosVerAdm=45
+const minutosVerificarTC=30
+const minutosVerificarAdm=45
 
 //obtener dia y mes para la foto
 var fec = new Date(),
 mes = fec.getMonth() + 1,
 horaV=fec.getHours(),
+minutosV=fec.getMinutes(),
 dia = fec.getDate();
 //obtener hora para validar el ingreso
 
@@ -146,19 +147,17 @@ const consultarSalida = (dni) => {
 }
 const consultarEstadoReg = (dni) => {
     console.log("Consultando Estado de registro")
-    const sql = `select * from asistencia_ing where dniPer='${dni}' and dia='${dia}' and mes='${mes}'`
-    conector.query(sql, function (err, result, field) {
-        conector.query(sql, function (err, result, field) {
+    const sql3 = `select * from asistencia_ing where dniPer='${dni}' and dia='${dia}' and mes='${mes}'`
+    conector.query(sql3, function (err, result, field) {
+        conector.query(sql3, function (err, result, field) {
             try {
                 //Imprime todo el objeto docente
                 console.log("estoy consultando registro Estado Reg ENTRADA")
-                // let tipoRegistroEntradaOSalida=result[0].tipoReg
-                // console.log(tipoRegistroEntradaOSalida)
                 if (result.length!=0){
                         eReg="YA SE REGISTRO SU INGRESO"
                 }else{
                     contador=1
-                    eReg="LLEGASTE TARDE, TU SALIDA ES A LAS "+horaSalidaTC+", COMUNICATE CON RECURSOS"
+                    eReg="LLEGASTE TARDE, TU SALIDA ES A LAS "+horaSalidaTC
                 }
             } catch (err) {
                 console.log(err)
@@ -241,11 +240,11 @@ const consultarDni = (dni) => {
              //aqui va consultarIngreso pero lo voy a cambiar para que verifique la hora   
              tipo=result[0].tipo;
              if(tipo=='TC'){
-                if(horaV<horaIngresoTC){
+                if(horaV<=horaIngresoTC && minutosV<minutosVerificarTC){
                     consultarIngreso(dni)
-                }else if(horaV>horaSalidaTC){
+                }else if(horaV>=horaSalidaTC && minutosV>0){
                     consultarSalida(dni)
-                }else if(horaV>=horaIngresoTC && horaV<horaSalidaTC ){
+                }else if(horaV>=horaIngresoTC && minutosV>minutosVerificarTC && horaV<horaSalidaTC ){
                     consultarEstadoReg(dni)
                 }
              }
