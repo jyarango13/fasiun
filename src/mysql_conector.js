@@ -3,9 +3,16 @@ import mysql from 'mysql'
 let docente,dniV,codigo,tipo
 let eReg
 let horaIngreso
+//variable para respuesta positiva para la toma de foto
+let consulta=0
+let contador=0
 //variables horarios ingreso y salida
 const horaIngresoTC=10
 const horaSalidaTC=14
+const horaIngresoAdm=8
+const horaSalidaAdm=15
+const minutosVer=30
+const minutosVerAdm=45
 
 //obtener dia y mes para la foto
 var fec = new Date(),
@@ -40,37 +47,43 @@ conector.connect(function(err) {
 
 
 const agregarEntrada = (dni) => {
+    consulta=1
+    console.log("Agregando entrada")
     let estado='001'
-    let tipoReg='ING'
+    let tipoRegi='ING'
     //var doc=document.getElementById("dni").value;
-    let codigoAsistencia = mes + "-" + dia + "-" + dni+"-"+tipoReg;
+    let codigoAsistencia = mes + "-" + dia + "-" + dni+"-"+tipoRegi;
     const sql = `INSERT INTO asistencia_ing (idAsi,dia,horIng,dniPer,estado,tipoReg,mes)`+
-     `VALUES ('${codigoAsistencia}','${dia}','${horaIngreso}','${dni}','${estado}','${tipoReg}','${mes}')`
+     `VALUES ('${codigoAsistencia}','${dia}','${horaIngreso}','${dni}','${estado}','${tipoRegi}','${mes}')`
     conector.query(sql, function (err, result, field) {
-        if (err) throw err
-        //console.log(result)
+        try {
+            consulta=1
+        } catch (err) {
+            console.log(err)
+        }
     })
 }
 const agregarSalida = (dni) => {
+    console.log("Agregando salida")
+    
     let estado='001'
     let tipoReg='SAL'
     let codigoAsistencia = mes + "-" + dia + "-" + dni+"-"+tipoReg;
     const sql = `INSERT INTO asistencia_sal (idAsi,dia,horSal,dniPer,estado,tipoReg,mes)`+
      `VALUES ('${codigoAsistencia}','${dia}','${horaIngreso}','${dni}','${estado}','${tipoReg}','${mes}')`
     conector.query(sql, function (err, result, field) {
-        if (err) throw err
-        //console.log(result)
+       
+        try {
+            consulta=1
+        } catch (err) {
+            console.log(err)
+        }
     })
-    // let codigoAsistencia = mes + "-" + dia + "-" + dni;
-    // const sql = `UPDATE asistencia SET horSal='${horaIngreso}' where idAsi='${codigoAsistencia}'`
-    // conector.query(sql, function (err, result, field) {
-    //     if (err) throw err
-    //     //console.log(result)
-    // })
 }
 
 const consultarIngreso = (dni) => {
     //var doc=document.getElementById("dni").value;
+    console.log("Consultando Ingreso")
     let codigoAsistencia = mes + "-" + dia + "-" + dni+"-ING";
     const sql = `select * from asistencia_ing where idAsi='${codigoAsistencia}'`
     conector.query(sql, function (err, result, field) {
@@ -80,7 +93,7 @@ const consultarIngreso = (dni) => {
                 //console.log(result)
                 if (result.length==0){
                     agregarEntrada(dni)
-                    eReg="DOCENTE "+dni+" REGISTRÓ SU ENTRADA "+" = "+ horaIngreso
+                    eReg="PERSONAL "+dni+" REGISTRÓ SU ENTRADA "+": "+ horaIngreso
                     throw 'DOCENTE NO REGISTRO ASISTENCIA INGRESO'
                 }else{
                     eReg="YA ESTA REGISTRADO TU INGRESO, TU SALIDA ES "+ horaSalidaTC
@@ -94,16 +107,32 @@ const consultarIngreso = (dni) => {
 }
 const consultarSalida = (dni) => {
     //var doc=document.getElementById("dni").value;
+    
     let codigoAsistencia = mes + "-" + dia + "-" + dni+"-SAL";
+    let eRegIng=""
+    const sql1 = `select * from asistencia_ing where dniPer='${dni}' and dia='${dia}' and mes='${mes}'`
+    conector.query(sql1, function (err, result, field) {
+        conector.query(sql1, function (err, result, field) {
+            try {
+                console.log("Consultando Entrada dentro de la salida")
+                  if (result.length==0){
+                    eRegIng="PENDIENTE EL REGISTRO DE SU INGRESO"
+                }
+            } catch (err) {
+                console.log(err)
+            }
+        })
+    })
     const sql = `select * from asistencia_sal where idAsi='${codigoAsistencia}'`
     conector.query(sql, function (err, result, field) {
         conector.query(sql, function (err, result, field) {
             try {
+                console.log("Consultando Salida en Salida")
                 //Imprime todo el objeto docente
                 //console.log(result)
                 if (result.length==0){
                     agregarSalida(dni)
-                    eReg="DOCENTE "+dni+" REGISTRÓ SU SALIDA "+" = "+ horaIngreso
+                    eReg="DOCENTE "+dni+" REGISTRÓ SU SALIDA "+" = "+ horaIngreso + " "+ eRegIng
                     throw 'DOCENTE NO REGISTRO ASISTENCIA SALIDA'                  
                 }else{
                     eReg="YA ESTA REGISTRADO TU SALIDA "
@@ -114,47 +143,66 @@ const consultarSalida = (dni) => {
             }
         })
     })
+
 }
 const consultarEstadoReg = (dni) => {
-    //var doc=document.getElementById("dni").value;
-    //let codigoAsistencia = mes + "-" + dia + "-" + dni+"-SAL";
+    console.log("Consultando Estado de registro")
     const sql = `select * from asistencia_ing where dniPer='${dni}' and dia='${dia}' and mes='${mes}'`
     conector.query(sql, function (err, result, field) {
         conector.query(sql, function (err, result, field) {
             try {
                 //Imprime todo el objeto docente
-                //console.log(result)
-                let tipoRegistroEntradaOSalida=result[0].tipoReg
-                console.log(tipoRegistroEntradaOSalida)
+                console.log("estoy consultando registro Estado Reg ENTRADA")
+                // let tipoRegistroEntradaOSalida=result[0].tipoReg
+                // console.log(tipoRegistroEntradaOSalida)
                 if (result.length!=0){
-                    if(tipoRegistroEntradaOSalida=='ING'){
                         eReg="YA SE REGISTRO SU INGRESO"
-                    } else {
-                        eReg="LLEGASTE TU TARDE COMUNICATE CON RECURSOS PAR AREGULARIZAR TU ENTRADA"
-                    }
-                    if(tipoRegistroEntradaOSalida=='SAL')    {
-                        eReg="YA SE REGISTRO SU SALIDA"
-                    }  else{
-                        eReg="AUN NO ES TU SALIDA"
-                    }
                 }else{
-                    eReg="URGENTE COMUNICATE CON RECURSOS"
+                    contador++
+                    eReg="LLEGASTE TARDE, TU SALIDA ES A LAS "+horaSalidaTC+", COMUNICATE CON RECURSOS"
                 }
             } catch (err) {
                 console.log(err)
             }
         })
     })
+    if(contador != 1){
+        const sql2 = `select * from asistencia_sal where dniPer='${dni}' and dia='${dia}' and mes='${mes}'`
+        conector.query(sql2, function (err2, result2, field2) {
+            conector.query(sql2, function (err2, result2, field2) {
+                try {
+                    //Imprime todo el objeto docente
+                    //console.log(result)
+                    // let tipoRegistroEntradaOSalida=result[0].tipoReg
+                    // console.log(tipoRegistroEntradaOSalida)
+                    // if(ingresoCont==1){
+                    //     eReg="YA SE REGISTRO SU SALIDA, TIENE PENDIENTE SU INGRESO"
+                    // }
+                console.log("estoy consultando registro Estado Reg SALIDA")
+
+                    if (result2.length!=0){
+                            eReg="YA SE REGISTRO SU SALIDA"
+                    }
+                    else{
+                        eReg="URGENTE COMUNICATE CON RECURSOS"
+                    }
+                } catch (err2) {
+                    console.log(err2)
+                }
+            })
+        })
+    }
+    
 }
 
 
 const consultarDni = (dni) => {
-    console.log(horaV)
+    console.log("Consultando DNI en la BD "+horaV)
     const sql = `select * from docente where dni='${dni}'`
     conector.query(sql, function (err, result, field) {
         try {
             //Imprime todo el objeto docente
-            console.log(result)
+            //console.log(result)
             if (result.length==0){
                 eReg="DOCENTE NO ENCONTRADO"
                 throw 'DOCENTE NO ENCONTRADO'
@@ -164,9 +212,9 @@ const consultarDni = (dni) => {
              if(tipo=='TC'){
                 if(horaV<horaIngresoTC){
                     consultarIngreso(dni)
-                }else if(horaV>horaIngresoTC){
+                }else if(horaV>horaSalidaTC){
                     consultarSalida(dni)
-                }else{
+                }else if(horaV>=horaIngresoTC && horaV<horaSalidaTC ){
                     consultarEstadoReg(dni)
                 }
              }           
@@ -210,4 +258,4 @@ const obtenerEstadoR =() =>{
 }())
 
 
-export {agregarEntrada, agregarSalida, consultarDni,obtenerEstadoR }
+export {agregarEntrada, agregarSalida, consultarDni,obtenerEstadoR, }
