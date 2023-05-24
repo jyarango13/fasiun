@@ -1,6 +1,6 @@
 //importamos express
 import express, { response } from "express"
-import {agregarEntrada,agregarSalida,consultarDni,obtenerEstadoR} from "./src/mysql_conector.js"
+import {agregarEntrada,agregarSalida,consultarDni,obtenerEstadoR, obtenerEstadoConsulta} from "./src/mysql_conector.js"
 
 //iniciamos servidor
 const app=express()
@@ -26,7 +26,8 @@ app.get('/',function(req,res){
     //todos=obtenerContactos()
     //res.render('index',{titulo :'Aplicacion de contactos',contactos:todos})
     let estadoReg=obtenerEstadoR()
-    res.render('index',{titulo :'Asistencia Farmacia & Bioquímica',mensaje:estadoReg})
+    let obtenerEConsulta=obtenerEstadoConsulta()
+    res.render('index',{titulo :'Asistencia Farmacia & Bioquímica',mensaje:estadoReg,estadoConsulta:obtenerEConsulta})
 })
 
 app.get('/consultar/:dni',function(req,res){

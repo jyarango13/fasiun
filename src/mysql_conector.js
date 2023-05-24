@@ -25,7 +25,7 @@ dia = fec.getDate();
 const conector = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '$191591Jor',
+    password: '',
     database: 'asistencia_unmsm',
 })
 
@@ -229,7 +229,9 @@ const consultarDni = (dni) => {
 const obtenerEstadoR =() =>{
     return eReg
 }
-
+const obtenerEstadoConsulta =() =>{
+    return consulta
+}
 
 (function(){
     var actualizarHora=function(){
@@ -258,4 +260,7 @@ const obtenerEstadoR =() =>{
 }())
 
 
+
 export {agregarEntrada, agregarSalida, consultarDni,obtenerEstadoR, }
+
+
