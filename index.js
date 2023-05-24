@@ -32,8 +32,8 @@ app.get('/',function(req,res){
 app.get('/consultar/:dni',function(req,res){
     const dni = req.params.dni
     consultarDni(dni)
-    //regresar al inicio
     console.log(dni)
+    //regresar al inicio
     res.redirect('/')
 })
 //borrar
